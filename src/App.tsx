@@ -1,8 +1,9 @@
 import * as React from 'react';
+import { HeaderLayoutComponent } from './components';
 
 function App() {
   return (
-   <h1>test</h1>
+    <HeaderLayoutComponent/>
   );
 }
 
