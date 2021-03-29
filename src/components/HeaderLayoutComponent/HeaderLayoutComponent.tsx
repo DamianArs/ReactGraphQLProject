@@ -6,7 +6,7 @@ import { ProjectBreadCrumbs } from '../ProjectBreadCrumbs';
 const useStyles = makeStyles({
   root:{
     minHeight: '100vh',
-    background: '#d1cccc'
+    background: "#f0eeee"
   },
   header: {
     display: 'flex',
@@ -16,18 +16,25 @@ const useStyles = makeStyles({
     color: 'white',
     alignItems: 'center',
     fontSize: '24px'
+  },
+  line:{
+    margin: '0 30px 40px 30px',
+    height: '1px', 
+    background: 'gray'
   }
 },
 {
   name: 'HeaderLayoutComponent'
 }
 )
-export const HeaderLayoutComponent: React.FC = () => {
+export const HeaderLayoutComponent: React.FC = ({children}) => {
   const classes = useStyles();
   return(
     <div className={classes.root}>
       <div className={classes.header}>GraphQL Project</div>
       <ProjectBreadCrumbs />
+      <div className={classes.line}/>
+      {children}
     </div>
   )
 }
