@@ -4,9 +4,12 @@ import { makeStyles } from '@material-ui/core/styles';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import { useHistory } from 'react-router';
 
+
+
 const useStyles = makeStyles({
   root:{
     display: 'flex',
+    flexDirection: 'column',
     padding: '0 30px'
   },
   button:{
@@ -27,6 +30,11 @@ const useStyles = makeStyles({
     fontSize: '56px', 
     color: 'black',
     marginRight: '20px'
+  },
+  line:{
+    margin: '0 30px 40px 30px',
+    height: '1px', 
+    background: 'gray'
   }
 },
 {
