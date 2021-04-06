@@ -25,9 +25,9 @@ const useStyles = makeStyles({
   },
   listIcon:{
     padding: '10px',
-    background: 'gray',
+    background: '#c0bebe',
     borderRadius: '50px',
-    fontSize: '56px', 
+    fontSize: '36px', 
     color: 'black',
     marginRight: '20px'
   },
@@ -54,8 +54,8 @@ export const ConsoleComponent:React.FC = () => {
     <div className={classes.root}>
       <Paper className={classes.button} onClick={handleRoute}>
         <ListAltIcon className={classes.listIcon}/>
-        <div style={{fontSize: '36px'}}>
-          List
+        <div style={{fontSize: '24px'}}>
+          List of Customers
         </div>
       </Paper>
     </div>
