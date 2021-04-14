@@ -2,7 +2,7 @@ const faker = require('faker')
 const { v4 } = require('uuid')
 
 module.exports = function () {
-  const data = {
+  const customers = {
   persons: [
     {
       id: v4(),
@@ -148,7 +148,12 @@ module.exports = function () {
       phone: faker.phone.phoneNumber()
     },
     
-  ]
+  ],
+  pagination: 
+    {
+      page: 0,
+      perPage: 5
+    }
 }
-return data
+return customers
 }

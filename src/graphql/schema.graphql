@@ -1,4 +1,6 @@
 type customer {
+  page: Int
+  perPage: Int
   id: String!
   name: String!
   country: String!
@@ -7,5 +9,10 @@ type customer {
 }
 
 type Query {
-  customers: [customer]
+  customers(page: Int, perPage: Int): [customer]
+  _customersMeta(page: Int, perPage: Int): ListMetaData
+  customer(id: String!): customer
+}
+type ListMetaData {
+  count: Int!
 }

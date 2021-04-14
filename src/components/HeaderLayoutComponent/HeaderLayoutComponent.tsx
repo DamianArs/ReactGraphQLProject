@@ -24,6 +24,7 @@ const useStyles = makeStyles({
 }
 )
 export const HeaderLayoutComponent: React.FC = ({children}) => {
+  console.log('test')
   const classes = useStyles();
   return(
     <div className={classes.root}>
