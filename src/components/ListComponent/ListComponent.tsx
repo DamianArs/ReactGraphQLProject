@@ -40,6 +40,7 @@ const useStyles = makeStyles({
 )
 export const ListComponent:React.FC = () => {
   const[stateCustomers, setStateCustomers] = React.useState([])
+  const[oneCustomer, setOneCustomer] = React.useState<Customer[]>([])
   const[total,setTotal] = React.useState(0)
   const[page, setPage] = React.useState(1);
   const[perPage, setPerPage] = React.useState(10)
@@ -58,13 +59,23 @@ export const ListComponent:React.FC = () => {
   const onChangePage = React.useCallback((newValue: number) => setPage(newValue), [])
   const onChangePerPage = React.useCallback((newValue: number) => setPerPage(newValue), [])
 
+  const handleOneCustomer = React.useCallback((value: Customer)=>{
+    setOneCustomer([value])
+  },[])
+
+  const clearOneCustomer = React.useCallback(()=>{
+    setOneCustomer([])
+  },[])
+
   React.useEffect(()=>{
     if(data){
       setStateCustomers(data.items)
       setTotal(data.total.count)
     }
-  },[data])
+  },[data, oneCustomer.length])
 
+ 
+ 
   
   const handleRoute = (customer: Customer) => {
     history.push(`/List/${customer.id}?uuid=${customer.id}&name=${customer.name}&country=${customer.country}&email=${customer.email}&phone=${customer.phone}`)
@@ -75,7 +86,7 @@ export const ListComponent:React.FC = () => {
   if(stateCustomers){
     return(
       <div className={classes.root}>
-        <SearchComponent/>
+        <SearchComponent handleOneCustomer={(value:any)=>handleOneCustomer(value)} clearOneCustomer={clearOneCustomer}/>
         <TableSummary length={total}/>
         <TableContainer component={Paper} style={{borderRadius:'0 0 4px 4px'}}>
           <Table>
@@ -89,25 +100,39 @@ export const ListComponent:React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {stateCustomers.map((customer:Customer, index:number) => (
-                <TableRow key={customer.id} style={{background: index%2 ? 'white': '#f6f3f3'}}>
-                  <TableCell>{customer.id}</TableCell>
-                  <TableCell className={classes.showDetails}><SlideshowOutlinedIcon style={{marginRight: '5px'}} onClick={()=>handleRoute(customer)}/> {customer.name}</TableCell>
-                  <TableCell>{customer.country}</TableCell>
-                  <TableCell>{customer.email}</TableCell>
-                  <TableCell>{customer.phone}</TableCell>
-                </TableRow>
-              ))}
+              {oneCustomer.length >= 1 && 
+                oneCustomer.map((customer:Customer, index: number) => (
+                  <TableRow key={customer.id} style={{background: index%2 ? 'white': '#f6f3f3'}}>
+                    <TableCell>{customer.id}</TableCell>
+                    <TableCell className={classes.showDetails}><SlideshowOutlinedIcon style={{marginRight: '5px'}} onClick={()=>handleRoute(customer)}/> {customer.name}</TableCell>
+                    <TableCell>{customer.country}</TableCell>
+                    <TableCell>{customer.email}</TableCell>
+                    <TableCell>{customer.phone}</TableCell>
+                  </TableRow>
+                )) 
+              }
+              {oneCustomer.length === 0 && 
+                stateCustomers.map((customer:Customer, index:number) => (
+                  <TableRow key={customer.id} style={{background: index%2 ? 'white': '#f6f3f3'}}>
+                    <TableCell>{customer.id}</TableCell>
+                    <TableCell className={classes.showDetails}><SlideshowOutlinedIcon style={{marginRight: '5px'}} onClick={()=>handleRoute(customer)}/> {customer.name}</TableCell>
+                    <TableCell>{customer.country}</TableCell>
+                    <TableCell>{customer.email}</TableCell>
+                    <TableCell>{customer.phone}</TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>
-        <PaginationComponent
-          page={page}
-          perPage={perPage}
-          total={total}
-          onChangePage={onChangePage}
-          onChangePerPage={onChangePerPage}
-        />
+        {oneCustomer.length === 0 &&
+          <PaginationComponent
+            page={page}
+            perPage={perPage}
+            total={total}
+            onChangePage={onChangePage}
+            onChangePerPage={onChangePerPage}
+          />
+        }
       </div>
     )
     

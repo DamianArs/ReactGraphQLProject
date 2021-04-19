@@ -1,6 +1,4 @@
 type customer {
-  page: Int
-  perPage: Int
   id: String!
   name: String!
   country: String!
