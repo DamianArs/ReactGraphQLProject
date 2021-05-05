@@ -15,6 +15,9 @@ import { TableSummary } from './TableSummary';
 import SlideshowOutlinedIcon from '@material-ui/icons/SlideshowOutlined';
 import { PaginationComponent } from '../../common';
 import { SearchComponent } from '../../common/SearchComponent';
+import EditIcon from '@material-ui/icons/Edit';
+import ModalDialog from '../../common/ModalDialog/ModalDialog';
+
 
 
 const useStyles = makeStyles({
@@ -41,9 +44,11 @@ const useStyles = makeStyles({
 export const ListComponent:React.FC = () => {
   const[stateCustomers, setStateCustomers] = React.useState([])
   const[oneCustomer, setOneCustomer] = React.useState<Customer[]>([])
+  const[editCustomer, setEditCustomer] = React.useState<Customer>()
   const[total,setTotal] = React.useState(0)
   const[page, setPage] = React.useState(1);
   const[perPage, setPerPage] = React.useState(10)
+  const[openModal, setOpenModal] = React.useState(false)
 
 
   const classes = useStyles();
@@ -65,6 +70,19 @@ export const ListComponent:React.FC = () => {
 
   const clearOneCustomer = React.useCallback(()=>{
     setOneCustomer([])
+  },[])
+
+  const handleOpenModal = React.useCallback(()=>{
+    setOpenModal(true)
+  },[])
+
+  const handleClose = React.useCallback(()=>{
+    setOpenModal(false)
+  },[])
+
+  const handleEditCustomer = React.useCallback((customer: Customer)=>{
+    handleOpenModal()
+    setEditCustomer(customer)
   },[])
 
   React.useEffect(()=>{
@@ -104,7 +122,13 @@ export const ListComponent:React.FC = () => {
                 oneCustomer.map((customer:Customer, index: number) => (
                   <TableRow key={customer.id} style={{background: index%2 ? 'white': '#f6f3f3'}}>
                     <TableCell>{customer.id}</TableCell>
-                    <TableCell className={classes.showDetails}><SlideshowOutlinedIcon style={{marginRight: '5px'}} onClick={()=>handleRoute(customer)}/> {customer.name}</TableCell>
+                    <TableCell>
+                      <div className={classes.showDetails}>
+                        <EditIcon onClick={()=>handleEditCustomer(customer)}/>
+                        <SlideshowOutlinedIcon style={{margin: '0 15px'}} onClick={()=>handleRoute(customer)}/> 
+                        {customer.name}
+                      </div>
+                      </TableCell>
                     <TableCell>{customer.country}</TableCell>
                     <TableCell>{customer.email}</TableCell>
                     <TableCell>{customer.phone}</TableCell>
@@ -115,7 +139,13 @@ export const ListComponent:React.FC = () => {
                 stateCustomers.map((customer:Customer, index:number) => (
                   <TableRow key={customer.id} style={{background: index%2 ? 'white': '#f6f3f3'}}>
                     <TableCell>{customer.id}</TableCell>
-                    <TableCell className={classes.showDetails}><SlideshowOutlinedIcon style={{marginRight: '5px'}} onClick={()=>handleRoute(customer)}/> {customer.name}</TableCell>
+                    <TableCell>
+                      <div className={classes.showDetails}>
+                        <EditIcon onClick={()=>handleEditCustomer(customer)}/>
+                        <SlideshowOutlinedIcon style={{margin: '0 15px'}} onClick={()=>handleRoute(customer)}/> 
+                        {customer.name}
+                      </div>
+                    </TableCell>
                     <TableCell>{customer.country}</TableCell>
                     <TableCell>{customer.email}</TableCell>
                     <TableCell>{customer.phone}</TableCell>
@@ -124,6 +154,7 @@ export const ListComponent:React.FC = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        <ModalDialog open={openModal} handleClose={handleClose} customer={editCustomer}/>
         {oneCustomer.length === 0 &&
           <PaginationComponent
             page={page}
