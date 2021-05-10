@@ -13,8 +13,6 @@ class CustomerController {
     if (typeof page !== undefined && typeof perPage !== undefined) {
      
       return _(this.customersList)
-        // .drop(page * perPage) // page in drop function starts from 0
-        // .take(perPage) // limit 2
         .value();
     }
 

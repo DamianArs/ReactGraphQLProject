@@ -17,7 +17,7 @@ import { PaginationComponent } from '../../common';
 import { SearchComponent } from '../../common/SearchComponent';
 import EditIcon from '@material-ui/icons/Edit';
 import ModalDialog from '../../common/ModalDialog/ModalDialog';
-
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 
 const useStyles = makeStyles({
@@ -54,7 +54,7 @@ export const ListComponent:React.FC = () => {
   const classes = useStyles();
   const history = useHistory()
 
-  const{data} = useQuery(CustomersQuery,{
+  const{data, loading} = useQuery(CustomersQuery,{
     variables:{
       page,
       perPage
@@ -106,6 +106,9 @@ export const ListComponent:React.FC = () => {
       <div className={classes.root}>
         <SearchComponent handleOneCustomer={(value:any)=>handleOneCustomer(value)} clearOneCustomer={clearOneCustomer}/>
         <TableSummary length={total}/>
+        <div style={{height: '2px', width:'100%'}}>
+          {loading && <LinearProgress style={{width: '100%', height: '2px'}}/>}
+        </div>
         <TableContainer component={Paper} style={{borderRadius:'0 0 4px 4px'}}>
           <Table>
             <TableHead>

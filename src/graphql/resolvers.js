@@ -24,5 +24,24 @@ module.exports = {
       }
   } ,
   customer: (_,{id}) => customers.findCustomerById(id)
-}
+},
+  Mutation:{
+    EditCustomer: (_,{ id, name, country, email, phone}) =>{
+      const newCustomer = {
+        id,
+        name,
+        country,
+        email,
+        phone
+      }
+     customers.customersList = customers.customersList.map(customer=>{
+       if(customer.id === id){
+         customer = Object.assign({}, newCustomer)
+         return customer
+       }
+       return customer
+     })
+     return customers.customersList
+    }
+  }
 }

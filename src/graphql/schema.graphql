@@ -11,6 +11,19 @@ type Query {
   _customersMeta(page: Int, perPage: Int): ListMetaData
   customer(id: String!): customer
 }
+type Mutation {
+  EditCustomer(
+    id: String!
+    name: String!
+    country: String!
+    email: String!
+    phone: String!
+  ): [customer]
+}
+
 type ListMetaData {
   count: Int!
+}
+type MutationResult {
+  success: Boolean
 }

@@ -6,6 +6,8 @@ import { Form} from 'react-final-form'
 import TextField from '@material-ui/core/TextField';
 import { Customer } from '../../Types';
 import { Box, Button } from '@material-ui/core';
+import { useMutation } from '@apollo/react-hooks'
+import { EditCustomer } from '../../graphql/mutations';
 
 
 
@@ -51,11 +53,23 @@ export interface ModalDialogProps {
   })
   const classes = useStyles();
   const { handleClose, open, customer } = props;
+  const[fetch, fetchProps] = useMutation(EditCustomer)
 
   
 
-  const onSubmit = useCallback((value)=>{
-    console.log('VVVV', value);
+  const onSubmit = useCallback(()=>{
+    if(customer){
+    fetch({
+      variables: {
+        id: customer.id,
+        name: stateCustomer.name,
+        country: stateCustomer.country,
+        phone: stateCustomer.phone,
+        email: stateCustomer.email
+      }
+    })
+    handleClose()
+  }
     
   },[stateCustomer])
 
@@ -84,7 +98,6 @@ export interface ModalDialogProps {
               initialValues={customer}
               onSubmit={onSubmit}
               render={({ handleSubmit, form, values, }) => {
-                console.log('TTTT', form, values, stateCustomer)
                 return(
                 <form onSubmit={handleSubmit}>
                   <div className={classes.form}>
@@ -108,7 +121,7 @@ export interface ModalDialogProps {
                   <div style={{marginLeft: '50px', paddingBottom: '20px'}}>
                     <Button  variant='contained' color='primary'
                     disabled={stateCustomer.name === values.name && stateCustomer.country === values.country && stateCustomer.phone === values.phone && stateCustomer.email === values.email  ? true : false} 
-                    style={{marginRight: '20px'}}  onClick={()=>onSubmit(values)}>Edit</Button>
+                    style={{marginRight: '20px'}}  onClick={onSubmit}>Edit</Button>
                     <Button color='primary' onClick={handleClose}>Cancel</Button>
                   </div>
                 </form>)}
