@@ -8,6 +8,8 @@ import { Customer } from '../../Types';
 import { Box, Button } from '@material-ui/core';
 import { useMutation } from '@apollo/react-hooks'
 import { EditCustomer } from '../../graphql/mutations';
+import { ToastContainer, toast } from 'react-toastify';
+  import 'react-toastify/dist/ReactToastify.css';
 
 
 
@@ -68,10 +70,16 @@ export interface ModalDialogProps {
         email: stateCustomer.email
       }
     })
+    if(fetchProps){
+      toast.success('Edit successfully completed!')
+    }
+    if(!fetchProps){
+      toast.error('Something went wrong!')
+    }
     handleClose()
   }
     
-  },[stateCustomer])
+  },[stateCustomer, fetchProps])
 
   const handleCustomer = (e: React.ChangeEvent<HTMLInputElement>) => {
     setStateCustomer({

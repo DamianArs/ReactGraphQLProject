@@ -3,6 +3,7 @@ import { RoutingComponent } from './common';
 import { HeaderLayoutComponent } from './components';
 import { ApolloProvider } from "react-apollo";
 import ApolloClient from 'apollo-boost';
+import { ToastContainer, toast } from 'react-toastify';
 
 
 
@@ -16,6 +17,7 @@ function App() {
   <ApolloProvider client={client}>
     <HeaderLayoutComponent>
       <RoutingComponent/>
+      <ToastContainer position="bottom-left" hideProgressBar={true}/>
     </HeaderLayoutComponent>
   </ApolloProvider>
   );
