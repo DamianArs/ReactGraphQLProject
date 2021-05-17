@@ -4,6 +4,7 @@ import { DisplayComponent, ListComponent } from '../../components'
 import { ConsoleComponent } from '../../components/ConsoleComponent/ConsoleComponent'
 import ProjectBreadCrumbs from '../../components/ProjectBreadCrumbs/ProjectBreadCrumbs'
 import { makeStyles } from '@material-ui/core/styles';
+import { NewCustomerComponent } from '../../components/NewCustomerComponent'
 
 const useStyles = makeStyles({
   root:{
@@ -29,6 +30,7 @@ export const RoutingComponent = () => {
       <Switch>
         <Route exact path='/' component={ConsoleComponent}/>
         <Route exact path='/List' component={ListComponent}/>
+        <Route exact path='/List/NewCustomer' component={NewCustomerComponent}/>
         <Route exact path='/List/:uuid' component={DisplayComponent}/>
       </Switch>
      </Router>

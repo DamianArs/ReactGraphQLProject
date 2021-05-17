@@ -9,6 +9,8 @@ import { InputAdornment } from '@material-ui/core';
 import { useLazyQuery } from '@apollo/react-hooks';
 import { OneCustomersQuery } from '../../graphql/queries';
 import { Customer } from '../../Types';
+import Box from '@material-ui/core/Box';
+import { useHistory } from 'react-router';
 
 const useStyles = makeStyles({
   root:{},
@@ -42,6 +44,7 @@ interface SearchComponentProps{
 
 export const SearchComponent: React.FC<SearchComponentProps> = ({handleOneCustomer, clearOneCustomer}) => {
   const[fetchCustomer, fetchCustomerProps] = useLazyQuery(OneCustomersQuery)
+  const history = useHistory()
   const classes = useStyles();
   const onSubmit = React.useCallback((values:SearchProps) => {
    fetchCustomer({
@@ -56,6 +59,10 @@ export const SearchComponent: React.FC<SearchComponentProps> = ({handleOneCustom
     handleOneCustomer(fetchCustomerProps.data.items)
     
   },[fetchCustomerProps])
+
+  const handleNewCustomer = React.useCallback(()=>{
+    history.push('./List/NewCustomer')
+  },[])
 
   
   return(
@@ -86,9 +93,15 @@ export const SearchComponent: React.FC<SearchComponentProps> = ({handleOneCustom
                 }}
               />
               )} />
-              <Button disabled={!values.id} className={classes.button} variant='contained' color="primary" type='submit'>Search</Button>
-              <Button variant="outlined" onClick={clearOneCustomer}>Clear Search</Button>
+              <Box display='flex' width='100%' justifyContent='space-between'>
+                <Box display='flex'>
+                  <Button disabled={!values.id} className={classes.button} variant='contained' color="primary" type='submit'>Search</Button>
+                  <Button variant="outlined" onClick={clearOneCustomer}>Clear Search</Button>
+                </Box>
+                <Button variant='outlined' onClick={handleNewCustomer}>New Customer</Button>
+              </Box>
             </form>
+            
           </Paper>
         </div>
     )}

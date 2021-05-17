@@ -2,14 +2,15 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import EditIcon from '@material-ui/icons/Edit';
 import Dialog from '@material-ui/core/Dialog';
-import { Form} from 'react-final-form'
+import { Form } from 'react-final-form'
 import TextField from '@material-ui/core/TextField';
 import { Customer } from '../../Types';
 import { Box, Button } from '@material-ui/core';
 import { useMutation } from '@apollo/react-hooks'
 import { EditCustomer } from '../../graphql/mutations';
-import { ToastContainer, toast } from 'react-toastify';
-  import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { Field } from "react-final-form"
 
 
 
@@ -46,28 +47,24 @@ export interface ModalDialogProps {
 }
 
  const  ModalDialog: React.FC<ModalDialogProps> = (props) => {
-  const[stateCustomer, setStateCustomer] = useState<Customer>({
-    id: "",
-    name: "",
-    country: "",
-    phone: "",
-    email: ""
-  })
   const classes = useStyles();
   const { handleClose, open, customer } = props;
   const[fetch, fetchProps] = useMutation(EditCustomer)
 
   
 
-  const onSubmit = useCallback(()=>{
+  const onSubmit = useCallback((values)=>{
+    const{ name, country, phone, email } = values
+    console.log('vvvvv', values);
+    console.log(customer)
     if(customer){
     fetch({
       variables: {
-        id: customer.id,
-        name: stateCustomer.name,
-        country: stateCustomer.country,
-        phone: stateCustomer.phone,
-        email: stateCustomer.email
+        id: customer?.id,
+        name,
+        country,
+        phone,
+        email
       }
     })
     if(fetchProps){
@@ -77,23 +74,11 @@ export interface ModalDialogProps {
       toast.error('Something went wrong!')
     }
     handleClose()
-  }
-    
-  },[stateCustomer, fetchProps])
-
-  const handleCustomer = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setStateCustomer({
-     ...stateCustomer,
-     [e.currentTarget.name] : e.currentTarget.value
-    })
-  }
-
-  useEffect(()=>{
-    if(customer){
-      setStateCustomer(customer)
     }
-  },[customer])
+    
+  },[fetchProps, customer])
 
+  
   return (
       <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open} maxWidth={false}>
         <div className={classes.root}>
@@ -105,31 +90,79 @@ export interface ModalDialogProps {
           <Form
               initialValues={customer}
               onSubmit={onSubmit}
-              render={({ handleSubmit, form, values, }) => {
+              render={({ handleSubmit, pristine, values, }) => {
                 return(
                 <form onSubmit={handleSubmit}>
                   <div className={classes.form}>
                     <div className={classes.formRow}>
                       <Box mr='40px'>
-                        <TextField value={stateCustomer?.name}  name='name' label='Name' variant="outlined" onChange={handleCustomer} />
+                      <Field name="name" allowNull parse={(value) => value}>
+                        {({ input }) => (
+                        <TextField
+                        label='Name' 
+                        variant="outlined" 
+                        {...input}
+                        InputLabelProps={{
+                            shrink: true,
+                          }}
+                         />
+                          )}
+                        </Field>
                       </Box>
                       <Box>
-                        <TextField value={stateCustomer?.email} name='email' label='Email' variant="outlined" onChange={handleCustomer} />
+                      <Field name="email" allowNull parse={(value) => value}>
+                        {({ input }) => (
+                        <TextField
+                          label='Email' 
+                          variant="outlined" 
+                          {...input}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                        />
+                         )}
+                        </Field>
                       </Box>
                     </div>
                     <div className={classes.formRow}>
                       <Box mr='40px'>
-                        <TextField value={stateCustomer?.country} name='country' label='Country' variant="outlined" onChange={handleCustomer} />
+                        <Field name='country' allowNull parse={(value) => value}>
+                        {({ input }) => (
+                        <TextField 
+                          label='Country' 
+                          variant="outlined" 
+                          {...input}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                        />
+                         )}
+                        </Field>
                       </Box>
                       <Box>
-                        <TextField value={stateCustomer?.phone} name='phone' label='Phone Number' variant="outlined" onChange={handleCustomer} />
+                        <Field name='phone' allowNull parse={(value) => value}>
+                        {({ input }) => (
+                        <TextField 
+                          label='Phone Number'
+                          variant="outlined" 
+                           {...input}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                        />
+                           )}
+                        </Field>
                       </Box>
                     </div>
                   </div>
                   <div style={{marginLeft: '50px', paddingBottom: '20px'}}>
                     <Button  variant='contained' color='primary'
-                    disabled={stateCustomer.name === values.name && stateCustomer.country === values.country && stateCustomer.phone === values.phone && stateCustomer.email === values.email  ? true : false} 
-                    style={{marginRight: '20px'}}  onClick={onSubmit}>Edit</Button>
+                      disabled={pristine} 
+                      style={{marginRight: '20px'}} 
+                      type='submit' 
+                      >
+                      Edit
+                    </Button>
                     <Button color='primary' onClick={handleClose}>Cancel</Button>
                   </div>
                 </form>)}
