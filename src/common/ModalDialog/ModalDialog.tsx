@@ -55,8 +55,6 @@ export interface ModalDialogProps {
 
   const onSubmit = useCallback((values)=>{
     const{ name, country, phone, email } = values
-    console.log('vvvvv', values);
-    console.log(customer)
     if(customer){
     fetch({
       variables: {

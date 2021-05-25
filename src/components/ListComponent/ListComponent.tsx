@@ -2,7 +2,7 @@ import * as React from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router';
 import { CustomersQuery } from '../../graphql/queries';
-import { useLazyQuery, useQuery } from "@apollo/react-hooks";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/react-hooks";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -18,6 +18,12 @@ import { SearchComponent } from '../../common/SearchComponent';
 import EditIcon from '@material-ui/icons/Edit';
 import ModalDialog from '../../common/ModalDialog/ModalDialog';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
+import { DeleteCustomer } from '../../graphql/mutations';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const useStyles = makeStyles({
@@ -49,12 +55,13 @@ export const ListComponent:React.FC = () => {
   const[page, setPage] = React.useState(1);
   const[perPage, setPerPage] = React.useState(10)
   const[openModal, setOpenModal] = React.useState(false)
+  const[fetchDelete, fetchPropsDelete] = useMutation(DeleteCustomer)
 
 
   const classes = useStyles();
   const history = useHistory()
 
-  const{data, loading} = useQuery(CustomersQuery,{
+  const{data, loading, refetch} = useQuery(CustomersQuery,{
     variables:{
       page,
       perPage
@@ -85,21 +92,40 @@ export const ListComponent:React.FC = () => {
     setEditCustomer(customer)
   },[])
 
+  const handleDeleteCustomer = React.useCallback((id: string)=>{
+    fetchDelete({
+      variables:{
+        id,
+      }
+    })
+  },[])
+
   React.useEffect(()=>{
     if(data){
       setStateCustomers(data.items)
       setTotal(data.total.count)
     }
-  },[data, oneCustomer.length])
+    if(stateCustomers){
+      refetch()
+    }
+   
+   
+  },[data,stateCustomers])
 
- 
+  
+ React.useEffect(()=>{
+  if(fetchPropsDelete.data){
+    refetch()
+    toast.success('Delete successfully completed!')
+    if(oneCustomer.length <=1){
+      clearOneCustomer()
+    }
+  }
+ },[fetchPropsDelete.data])
  
   
   const handleRoute = (customer: Customer) => {
     history.push(`/List/${customer.id}?uuid=${customer.id}&name=${customer.name}&country=${customer.country}&email=${customer.email}&phone=${customer.phone}`)
-    
-    
-
   }
   if(stateCustomers){
     return(
@@ -118,6 +144,7 @@ export const ListComponent:React.FC = () => {
                 <TableCell>Country</TableCell>
                 <TableCell>Email</TableCell>
                 <TableCell>Phone</TableCell>
+                <TableCell/>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -135,6 +162,13 @@ export const ListComponent:React.FC = () => {
                     <TableCell>{customer.country}</TableCell>
                     <TableCell>{customer.email}</TableCell>
                     <TableCell>{customer.phone}</TableCell>
+                    <TableCell align='right'>
+                      <Tooltip title='Delete' placement='top' >
+                        <IconButton onClick={()=>handleDeleteCustomer(customer.id)}>
+                          <MoreVertIcon/>
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
                   </TableRow>
                 )) 
               }
@@ -152,6 +186,13 @@ export const ListComponent:React.FC = () => {
                     <TableCell>{customer.country}</TableCell>
                     <TableCell>{customer.email}</TableCell>
                     <TableCell>{customer.phone}</TableCell>
+                    <TableCell align='right'>
+                      <Tooltip title='Delete' placement='top' >
+                        <IconButton onClick={()=>handleDeleteCustomer(customer.id)}>
+                          <MoreVertIcon/>
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
                   </TableRow>
                 ))}
             </TableBody>

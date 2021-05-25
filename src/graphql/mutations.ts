@@ -17,3 +17,30 @@ export const EditCustomer = gql`
     }
   }
 `
+export const AddCustomer = gql`
+  mutation AddCustomer (
+    $id: String!
+    $name: String!
+    $country: String!
+    $email: String!
+    $phone: String!
+  ) {
+    addCustomer: AddCustomer(id: $id, name: $name, country: $country, email: $email, phone: $phone) {
+      id
+      name
+      country
+      email
+      phone
+    }
+  }
+`
+export const DeleteCustomer = gql`
+  mutation DeleteCustomer (
+    $id: String!
+  ) {
+    deleteCustomer: DeleteCustomer(id: $id ) {
+      id
+      name
+    }
+  }
+`

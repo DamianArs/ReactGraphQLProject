@@ -19,6 +19,14 @@ type Mutation {
     email: String!
     phone: String!
   ): [customer]
+  AddCustomer(
+    id: String!
+    name: String!
+    country: String!
+    email: String!
+    phone: String!
+  ): [customer]
+  DeleteCustomer(id: String!): [customer]
 }
 
 type ListMetaData {

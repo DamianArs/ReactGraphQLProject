@@ -1,6 +1,6 @@
 const { CustomerController } = require('./schemaController')
 const _= require('lodash')
-// import data from '../../db.json'
+
 
 const customers = new CustomerController()
 
@@ -42,6 +42,21 @@ module.exports = {
        return customer
      })
      return customers.customersList
+    },
+    AddCustomer:(_,{id, name, country, email, phone}) => {
+      const newCustomer = {
+        id,
+        name,
+        country,
+        email, 
+        phone
+      }
+      customers.customersList.push(newCustomer)
+      return customers.customersList
+    },
+    DeleteCustomer:(_,{id }) => {
+      customers.customersList = customers.customersList.filter(customer => customer.id !== id)
+      return customers.customersList
     }
   }
 }

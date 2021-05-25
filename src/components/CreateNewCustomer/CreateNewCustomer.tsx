@@ -3,6 +3,14 @@ import * as React from 'react'
 import { Form } from 'react-final-form'
 import AddIcon from '@material-ui/icons/Add';
 import { makeStyles } from '@material-ui/core/styles';
+import { Field } from "react-final-form"
+import { Customer } from '../../Types';
+import { useMutation } from '@apollo/react-hooks'
+import { AddCustomer } from '../../graphql/mutations';
+import { useHistory } from 'react-router';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+const { v4 } = require('uuid')
 
 const useStyles = makeStyles({
   root:{
@@ -12,7 +20,9 @@ const useStyles = makeStyles({
   header: {
     display: 'flex',
     alignItems: 'center',
-    paddingBottom: '20px'
+    paddingBottom: '20px',
+    marginLeft: '20px',
+    marginTop: '40px'
   },
   form:{
     display: 'flex',
@@ -20,7 +30,8 @@ const useStyles = makeStyles({
     marginBottom: '80px',
     "& input":{
       width: '300px'
-    }
+    },
+    marginLeft: '20PX'
   },
   formRow: {
     display: 'flex',
@@ -32,15 +43,32 @@ const useStyles = makeStyles({
 });
 
 export const CreateNewCustomer: React.FC = () => {
+  const[fetch, fetchProps] = useMutation(AddCustomer)
+  const history = useHistory()
   const classes = useStyles();
-  const onSubmit = React.useCallback(()=>{
-   
+  const onSubmit = React.useCallback((values:Customer)=>{
+    const{ name, phone, country, email } = values
+    fetch({
+      variables:{
+        id: v4(),
+        name,
+        phone,
+        email,
+        country
+      }
+    })
   },[])
-
+  React.useEffect(()=>{
+    if(fetchProps.data){
+      toast.success('Create successfully completed!')
+      history.push('/List')
+    }
+  },[fetchProps.data])
+  
   return(
     <div className={classes.root}>
           <Box className={classes.header}>
-           <AddIcon style={{marginRight: '10px'}}/>
+           <AddIcon style={{marginRight: '10px', alignSelf:'center'}}/>
             Create
           </Box>
           <div style={{height: '1px', backgroundColor: 'black', width: '100%', marginBottom:'40px'}}/>
@@ -51,24 +79,66 @@ export const CreateNewCustomer: React.FC = () => {
                   <div className={classes.form} >
                     <div className={classes.formRow}>
                       <Box mr='40px'>
-                        <TextField name='name' label='Name' variant="outlined"/>
+                      <Field name="name">
+                      {({ input }) => (
+                        <TextField 
+                          label='Name' 
+                          variant="outlined"
+                          {...input}
+                          
+                        />
+                      )}
+                      </Field>
                       </Box>
                       <Box>
-                        <TextField  name='email' label='Email' variant="outlined" />
+                      <Field name="email">
+                      {({ input }) => (
+                        <TextField 
+                          label='Email' 
+                          variant="outlined"
+                          {...input}
+                          
+                          />
+                        )}
+                      </Field>
                       </Box>
                     </div>
                     <div className={classes.formRow}>
                       <Box mr='40px'>
-                        <TextField  name='country' label='Country' variant="outlined"/>
+                      <Field name="country" >
+                      {({ input }) => (
+                        <TextField  
+                          label='Country' 
+                          variant="outlined"
+                          {...input}
+                          
+                          />
+                      )}
+                      </Field>
                       </Box>
                       <Box>
-                        <TextField  name='phone' label='Phone Number' variant="outlined" />
+                      <Field name="phone" >
+                      {({ input }) => (
+                        <TextField 
+                          label='Phone Number' 
+                          variant="outlined"
+                           {...input}
+                         
+                          />
+                        )}
+                        </Field>
                       </Box>
                     </div>
                   </div>
                   <div style={{marginLeft: '50px', paddingBottom: '20px'}}>
-                    <Button  variant='contained' color='primary'
-                    style={{marginRight: '20px'}}  onClick={onSubmit}>Create</Button>
+                    <Button  
+                      variant='contained' color='primary'
+                      style={{marginRight: '20px'}}  
+                      type='submit'
+                      disabled={!values.name || !values.country || !values.phone || !values.email}
+                      >
+                        Create
+                        </Button>
                     <Button color='primary'>Cancel</Button>
                   </div>
                 </form>)
