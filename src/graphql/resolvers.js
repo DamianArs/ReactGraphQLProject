@@ -23,7 +23,7 @@ module.exports = {
         count: data.length
       }
   } ,
-  customer: (_,{id}) => customers.findCustomerById(id)
+  
 },
   Mutation:{
     EditCustomer: (_,{ id, name, country, email, phone}) =>{

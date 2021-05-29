@@ -25,18 +25,4 @@ query customers(
     count
   }
 }`
-export const OneCustomersQuery = gql`
-query customer(
-  $id: String!
-){
-  items: customer(
-    id: $id
-    ){
-    id
-    name
-    country
-    email
-    phone
-  }
-}`
 

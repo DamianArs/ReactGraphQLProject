@@ -15,15 +15,9 @@ class CustomerController {
       return _(this.customersList)
         .value();
     }
-
     return this.customersList
    
   }
-
-  findCustomerById(id) {
-    return this.customersList.find((customer) => customer.id === id);
-  }
-  
 }
 
 module.exports.CustomerController = CustomerController;

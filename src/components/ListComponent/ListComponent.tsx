@@ -49,14 +49,13 @@ const useStyles = makeStyles({
 )
 export const ListComponent:React.FC = () => {
   const[stateCustomers, setStateCustomers] = React.useState([])
-  const[oneCustomer, setOneCustomer] = React.useState<Customer[]>([])
+  const[oneCustomer, setOneCustomer] = React.useState<Customer[] | string>([])
   const[editCustomer, setEditCustomer] = React.useState<Customer>()
   const[total,setTotal] = React.useState(0)
   const[page, setPage] = React.useState(1);
   const[perPage, setPerPage] = React.useState(10)
   const[openModal, setOpenModal] = React.useState(false)
   const[fetchDelete, fetchPropsDelete] = useMutation(DeleteCustomer)
-
 
   const classes = useStyles();
   const history = useHistory()
@@ -71,8 +70,8 @@ export const ListComponent:React.FC = () => {
   const onChangePage = React.useCallback((newValue: number) => setPage(newValue), [])
   const onChangePerPage = React.useCallback((newValue: number) => setPerPage(newValue), [])
 
-  const handleOneCustomer = React.useCallback((value: Customer)=>{
-    setOneCustomer([value])
+  const handleOneCustomer = React.useCallback((value: Customer[] | string)=>{
+    setOneCustomer(value)
   },[])
 
   const clearOneCustomer = React.useCallback(()=>{
@@ -109,9 +108,9 @@ export const ListComponent:React.FC = () => {
       refetch()
     }
    
-   
-  },[data,stateCustomers])
 
+  },[data,stateCustomers, handleOneCustomer, oneCustomer, setOneCustomer])
+  
   
  React.useEffect(()=>{
   if(fetchPropsDelete.data){
@@ -130,7 +129,7 @@ export const ListComponent:React.FC = () => {
   if(stateCustomers){
     return(
       <div className={classes.root}>
-        <SearchComponent handleOneCustomer={(value:any)=>handleOneCustomer(value)} clearOneCustomer={clearOneCustomer}/>
+        <SearchComponent handleOneCustomer={(value:any)=>handleOneCustomer(value)} clearOneCustomer={clearOneCustomer} stateCustomers={stateCustomers}/>
         <TableSummary length={total}/>
         <div style={{height: '2px', width:'100%'}}>
           {loading && <LinearProgress style={{width: '100%', height: '2px'}}/>}
@@ -144,11 +143,10 @@ export const ListComponent:React.FC = () => {
                 <TableCell>Country</TableCell>
                 <TableCell>Email</TableCell>
                 <TableCell>Phone</TableCell>
-                <TableCell/>
               </TableRow>
             </TableHead>
             <TableBody>
-              {oneCustomer.length >= 1 && 
+              {Array.isArray(oneCustomer) && 
                 oneCustomer.map((customer:Customer, index: number) => (
                   <TableRow key={customer.id} style={{background: index%2 ? 'white': '#f6f3f3'}}>
                     <TableCell>{customer.id}</TableCell>
@@ -162,16 +160,10 @@ export const ListComponent:React.FC = () => {
                     <TableCell>{customer.country}</TableCell>
                     <TableCell>{customer.email}</TableCell>
                     <TableCell>{customer.phone}</TableCell>
-                    <TableCell align='right'>
-                      <Tooltip title='Delete' placement='top' >
-                        <IconButton onClick={()=>handleDeleteCustomer(customer.id)}>
-                          <MoreVertIcon/>
-                        </IconButton>
-                      </Tooltip>
-                    </TableCell>
                   </TableRow>
                 )) 
               }
+              {oneCustomer==='none' && <div style={{padding: '16px'}}>No Results!</div>}
               {oneCustomer.length === 0 && 
                 stateCustomers.map((customer:Customer, index:number) => (
                   <TableRow key={customer.id} style={{background: index%2 ? 'white': '#f6f3f3'}}>
@@ -210,7 +202,6 @@ export const ListComponent:React.FC = () => {
         }
       </div>
     )
-    
   }
   return <h1>Loding...</h1>
   

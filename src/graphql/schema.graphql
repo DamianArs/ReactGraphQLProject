@@ -9,7 +9,6 @@ type customer {
 type Query {
   customers(page: Int, perPage: Int): [customer]
   _customersMeta(page: Int, perPage: Int): ListMetaData
-  customer(id: String!): customer
 }
 type Mutation {
   EditCustomer(

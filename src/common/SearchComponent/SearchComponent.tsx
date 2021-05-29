@@ -6,8 +6,6 @@ import TextField from '@material-ui/core/TextField';
 import { Paper } from '@material-ui/core';
 import ClearIcon from '@material-ui/icons/Clear';
 import { InputAdornment } from '@material-ui/core';
-import { useLazyQuery } from '@apollo/react-hooks';
-import { OneCustomersQuery } from '../../graphql/queries';
 import { Customer } from '../../Types';
 import Box from '@material-ui/core/Box';
 import { useHistory } from 'react-router';
@@ -34,32 +32,39 @@ const useStyles = makeStyles({
 
 interface SearchProps{
   id: string,
- 
 }
 
 interface SearchComponentProps{
-  handleOneCustomer: (value:Customer) => void
+  handleOneCustomer: (value:Customer[] | string) => void
   clearOneCustomer: () => void
+  stateCustomers: Customer[]
 }
 
-export const SearchComponent: React.FC<SearchComponentProps> = ({handleOneCustomer, clearOneCustomer}) => {
-  const[fetchCustomer, fetchCustomerProps] = useLazyQuery(OneCustomersQuery)
+export const SearchComponent: React.FC<SearchComponentProps> = ({handleOneCustomer, clearOneCustomer, stateCustomers}) => {
+  const[searchedCustomers, setSearchedCustomers] = React.useState<Customer[] | string>([])
   const history = useHistory()
   const classes = useStyles();
+  
   const onSubmit = React.useCallback((values:SearchProps) => {
-   fetchCustomer({
-     variables:{
-       id: values.id
-     }
-   })
-  },[])
+    const { id } = values
+    const SearchedCustomers = stateCustomers.filter((customer: Customer)=>{
+      if(customer.id.includes(id)){
+        return customer
+      }
+    })
+    if(SearchedCustomers.length >0 ){
+      setSearchedCustomers(SearchedCustomers)
+    }
+    else if(SearchedCustomers.length === 0){
+      console.log(SearchedCustomers)
+     setSearchedCustomers('none')
+    }
+    
+  },[stateCustomers])
 
   React.useEffect(()=>{
-    if(fetchCustomerProps.data)
-    handleOneCustomer(fetchCustomerProps.data.items)
-    
-  },[fetchCustomerProps])
-
+    handleOneCustomer(searchedCustomers)
+  },[searchedCustomers])
   const handleNewCustomer = React.useCallback(()=>{
     history.push('./List/NewCustomer')
   },[])
