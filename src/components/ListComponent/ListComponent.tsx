@@ -24,6 +24,8 @@ import IconButton from '@material-ui/core/IconButton';
 import { DeleteCustomer } from '../../graphql/mutations';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useSelector,useDispatch } from 'react-redux';
+import { addStoreDispatch } from '../../Store/middlewares';
 
 
 const useStyles = makeStyles({
@@ -56,6 +58,9 @@ export const ListComponent:React.FC = () => {
   const[perPage, setPerPage] = React.useState(10)
   const[openModal, setOpenModal] = React.useState(false)
   const[fetchDelete, fetchPropsDelete] = useMutation(DeleteCustomer)
+
+  const Name = useSelector(name => name)
+  const dispatch = useDispatch()
 
   const classes = useStyles();
   const history = useHistory()
@@ -100,16 +105,18 @@ export const ListComponent:React.FC = () => {
   },[])
 
   React.useEffect(()=>{
+    
     if(data){
       setStateCustomers(data.items)
       setTotal(data.total.count)
+      dispatch(addStoreDispatch())
     }
     if(stateCustomers){
       refetch()
     }
    
 
-  },[data,stateCustomers, handleOneCustomer, oneCustomer, setOneCustomer])
+  },[data,stateCustomers, handleOneCustomer, oneCustomer, setOneCustomer, addStoreDispatch])
   
   
  React.useEffect(()=>{
