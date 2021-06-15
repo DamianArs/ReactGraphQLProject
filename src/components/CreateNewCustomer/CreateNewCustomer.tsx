@@ -10,6 +10,8 @@ import { AddCustomer } from '../../graphql/mutations';
 import { useHistory } from 'react-router';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useDispatch } from 'react-redux';
+import { createCustomer } from '../../Store/middlewares';
 const { v4 } = require('uuid')
 
 const useStyles = makeStyles({
@@ -43,27 +45,17 @@ const useStyles = makeStyles({
 });
 
 export const CreateNewCustomer: React.FC = () => {
-  const[fetch, fetchProps] = useMutation(AddCustomer)
+  const dispatch = useDispatch()
   const history = useHistory()
   const classes = useStyles();
   const onSubmit = React.useCallback((values:Customer)=>{
     const{ name, phone, country, email } = values
-    fetch({
-      variables:{
-        id: v4(),
-        name,
-        phone,
-        email,
-        country
-      }
-    })
+    const id = v4()
+    dispatch(createCustomer(id,name, phone, email, country))
+    history.push('/List')
+    toast.success('Create successfully completed!')
   },[])
-  React.useEffect(()=>{
-    if(fetchProps.data){
-      toast.success('Create successfully completed!')
-      history.push('/List')
-    }
-  },[fetchProps.data])
+  
   
   return(
     <div className={classes.root}>

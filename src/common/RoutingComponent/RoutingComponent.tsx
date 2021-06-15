@@ -5,6 +5,8 @@ import { ConsoleComponent } from '../../components/ConsoleComponent/ConsoleCompo
 import ProjectBreadCrumbs from '../../components/ProjectBreadCrumbs/ProjectBreadCrumbs'
 import { makeStyles } from '@material-ui/core/styles';
 import { NewCustomerComponent } from '../../components/NewCustomerComponent'
+import { useDispatch } from 'react-redux'
+import { addStoreDispatch } from '../../Store/middlewares'
 
 const useStyles = makeStyles({
   root:{
@@ -23,6 +25,10 @@ const useStyles = makeStyles({
 
 export const RoutingComponent = () => {
   const classes = useStyles();
+  const dispatch = useDispatch()
+  React.useEffect(()=>{
+    dispatch(addStoreDispatch())
+  },[])
   return(
     <Router>
       <ProjectBreadCrumbs/>

@@ -1,8 +1,7 @@
 import * as React from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router';
-import { CustomersQuery } from '../../graphql/queries';
-import { useLazyQuery, useMutation, useQuery } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/react-hooks";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -25,7 +24,9 @@ import { DeleteCustomer } from '../../graphql/mutations';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector,useDispatch } from 'react-redux';
-import { addStoreDispatch } from '../../Store/middlewares';
+import { addStoreDispatch, deleteCustomer } from '../../Store/middlewares';
+import { store } from '../../Store';
+
 
 
 const useStyles = makeStyles({
@@ -49,28 +50,36 @@ const useStyles = makeStyles({
   name: 'ListComponent'
 }
 )
+
+interface InitialStates{
+    customersReducer:{
+      customers: Customer[]
+      total: number
+    }
+  }
+
+
 export const ListComponent:React.FC = () => {
-  const[stateCustomers, setStateCustomers] = React.useState([])
+  const[stateCustomers, setStateCustomers] = React.useState<Customer[]>([])
   const[oneCustomer, setOneCustomer] = React.useState<Customer[] | string>([])
   const[editCustomer, setEditCustomer] = React.useState<Customer>()
   const[total,setTotal] = React.useState(0)
   const[page, setPage] = React.useState(1);
   const[perPage, setPerPage] = React.useState(10)
   const[openModal, setOpenModal] = React.useState(false)
-  const[fetchDelete, fetchPropsDelete] = useMutation(DeleteCustomer)
+  
 
-  const Name = useSelector(name => name)
+  const Customers = useSelector((state:InitialStates)=>({
+    customers: state.customersReducer.customers,
+    total: state.customersReducer.total
+  }))
+ 
+  
   const dispatch = useDispatch()
 
   const classes = useStyles();
   const history = useHistory()
 
-  const{data, loading, refetch} = useQuery(CustomersQuery,{
-    variables:{
-      page,
-      perPage
-    }
-  })
   
   const onChangePage = React.useCallback((newValue: number) => setPage(newValue), [])
   const onChangePerPage = React.useCallback((newValue: number) => setPerPage(newValue), [])
@@ -97,38 +106,19 @@ export const ListComponent:React.FC = () => {
   },[])
 
   const handleDeleteCustomer = React.useCallback((id: string)=>{
-    fetchDelete({
-      variables:{
-        id,
-      }
-    })
-  },[])
+    dispatch(deleteCustomer(id))
+    toast.success('Customer deleted')
+    },[])
+ 
 
   React.useEffect(()=>{
-    
-    if(data){
-      setStateCustomers(data.items)
-      setTotal(data.total.count)
-      dispatch(addStoreDispatch())
-    }
-    if(stateCustomers){
-      refetch()
-    }
-   
+      setStateCustomers(Customers.customers)
+      setTotal(Customers.total)
+  },[Customers.customers])
 
-  },[data,stateCustomers, handleOneCustomer, oneCustomer, setOneCustomer, addStoreDispatch])
-  
-  
- React.useEffect(()=>{
-  if(fetchPropsDelete.data){
-    refetch()
-    toast.success('Delete successfully completed!')
-    if(oneCustomer.length <=1){
-      clearOneCustomer()
-    }
-  }
- },[fetchPropsDelete.data])
  
+
+  
   
   const handleRoute = (customer: Customer) => {
     history.push(`/List/${customer.id}?uuid=${customer.id}&name=${customer.name}&country=${customer.country}&email=${customer.email}&phone=${customer.phone}`)
@@ -139,7 +129,7 @@ export const ListComponent:React.FC = () => {
         <SearchComponent handleOneCustomer={(value:any)=>handleOneCustomer(value)} clearOneCustomer={clearOneCustomer} stateCustomers={stateCustomers}/>
         <TableSummary length={total}/>
         <div style={{height: '2px', width:'100%'}}>
-          {loading && <LinearProgress style={{width: '100%', height: '2px'}}/>}
+          {Customers.total === 0 && <LinearProgress style={{width: '100%', height: '2px'}}/>}
         </div>
         <TableContainer component={Paper} style={{borderRadius:'0 0 4px 4px'}}>
           <Table>
@@ -150,6 +140,7 @@ export const ListComponent:React.FC = () => {
                 <TableCell>Country</TableCell>
                 <TableCell>Email</TableCell>
                 <TableCell>Phone</TableCell>
+                <TableCell/>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -213,3 +204,4 @@ export const ListComponent:React.FC = () => {
   return <h1>Loding...</h1>
   
 }
+

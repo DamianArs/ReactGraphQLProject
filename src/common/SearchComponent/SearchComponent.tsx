@@ -56,7 +56,6 @@ export const SearchComponent: React.FC<SearchComponentProps> = ({handleOneCustom
       setSearchedCustomers(SearchedCustomers)
     }
     else if(SearchedCustomers.length === 0){
-      console.log(SearchedCustomers)
      setSearchedCustomers('none')
     }
     

@@ -3,6 +3,9 @@ import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import { useHistory } from 'react-router';
+import { Customer } from '../../Types';
+import { addStoreDispatch } from '../../Store/middlewares';
+
 
 
 
@@ -42,14 +45,20 @@ const useStyles = makeStyles({
 }
 )
 
+interface InitialStates{
+  customersReducer:{
+    customers: Customer[]
+    total: number
+  }
+}
+
 export const ConsoleComponent:React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
-
   const handleRoute = () => {
-    history.push('/List')
-    
+    history.push('/List')  
   }
+
   return(
     <div className={classes.root}>
       <Paper className={classes.button} onClick={handleRoute}>

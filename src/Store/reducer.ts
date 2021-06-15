@@ -1,20 +1,33 @@
-const SUCCESS = 'SUCCESS'
+import { Customer } from "../Types"
 
-const name: any = 'damian'
+const getData = 'getData'
+const deleteCustomer = 'deleteCustomer'
+const addCustomer = 'addCustomer'
 
-export const reducer = (state=name, action:any) => {
+const initialState = {
+  customers:[],
+  total:0
+}
+
+export const reducer = (state=initialState, action:any) => {
 
   switch(action.type){
-    case 'SUCCESS':
-      console.log('AAAAA',action.payload);
-      
-       return{
-      //   ...state,
-      //  posts: action.payload
-        }
-       
+    case getData:
+      return{
+        customers: action.payload.data.items,
+        total: action.payload.data.total.count
+      }
+    case  deleteCustomer: 
+      return{
+       customers: action.payload.data.deleteCustomer,
+       total: action.payload.data.deleteCustomer.length
+      }
+    case addCustomer: 
+    return{
+      customers: action.payload.data.addCustomer,
+       total: action.payload.data.addCustomer.length
+    }
+    
   }
-
-
   return state
 }

@@ -1,8 +1,6 @@
-export const ADD = 'ADD'
+export const deleteCustomerAction = 'deleteCustomerAction'
 
-export const add = (name: string) => ({
-  type: ADD,
-  payload: {
-   name
-  }
+export const deleteCustomer = (id: string) => ({
+  type: 'deleteCustomerAction',
+  payload: id
 })

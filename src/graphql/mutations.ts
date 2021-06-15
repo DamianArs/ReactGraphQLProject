@@ -41,6 +41,9 @@ export const DeleteCustomer = gql`
     deleteCustomer: DeleteCustomer(id: $id ) {
       id
       name
+      country
+      email
+      phone
     }
   }
 `

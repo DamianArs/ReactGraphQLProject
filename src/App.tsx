@@ -9,13 +9,14 @@ import { store } from './Store';
 
 
 
+
 export const client= new ApolloClient({
   uri: "http://localhost:4000/graphql"
 })
 
 function App() {
   
-
+ 
   return (
   <Provider store={store}>
     <ApolloProvider client={client}>
