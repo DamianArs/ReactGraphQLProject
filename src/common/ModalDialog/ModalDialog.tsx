@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import EditIcon from '@material-ui/icons/Edit';
 import Dialog from '@material-ui/core/Dialog';
@@ -11,6 +11,8 @@ import { EditCustomer } from '../../graphql/mutations';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Field } from "react-final-form"
+import { useDispatch } from 'react-redux';
+import { editCustomer } from '../../Store/middlewares';
 
 
 
@@ -48,33 +50,21 @@ export interface ModalDialogProps {
 
  const  ModalDialog: React.FC<ModalDialogProps> = (props) => {
   const classes = useStyles();
+  const dispatch = useDispatch()
   const { handleClose, open, customer } = props;
-  const[fetch, fetchProps] = useMutation(EditCustomer)
-
-  
 
   const onSubmit = useCallback((values)=>{
     const{ name, country, phone, email } = values
+    
     if(customer){
-    fetch({
-      variables: {
-        id: customer?.id,
-        name,
-        country,
-        phone,
-        email
-      }
-    })
-    if(fetchProps){
+      const id = customer?.id
+      dispatch(editCustomer(id, name, country, phone, email))
       toast.success('Edit successfully completed!')
-    }
-    if(!fetchProps){
-      toast.error('Something went wrong!')
-    }
-    handleClose()
+      handleClose()
     }
     
-  },[fetchProps, customer])
+    
+  },[customer])
 
   
   return (

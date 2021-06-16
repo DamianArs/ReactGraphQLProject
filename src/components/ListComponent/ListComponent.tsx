@@ -103,6 +103,7 @@ export const ListComponent:React.FC = () => {
   const handleEditCustomer = React.useCallback((customer: Customer)=>{
     handleOpenModal()
     setEditCustomer(customer)
+    setOneCustomer([])
   },[])
 
   const handleDeleteCustomer = React.useCallback((id: string)=>{
@@ -114,7 +115,7 @@ export const ListComponent:React.FC = () => {
   React.useEffect(()=>{
       setStateCustomers(Customers.customers)
       setTotal(Customers.total)
-  },[Customers.customers])
+  },[Customers.customers,handleEditCustomer ])
 
  
 

@@ -1,4 +1,4 @@
-import { AddCustomer } from './../graphql/mutations';
+import { AddCustomer, EditCustomer } from './../graphql/mutations';
 import { CustomersQuery } from './../graphql/queries';
 import { client } from "../App"
 import { DeleteCustomer } from '../graphql/mutations';
@@ -53,6 +53,26 @@ export const createCustomer = (id:string, name:string, country: string, emai
   })
     dispatch({
       type: 'addCustomer',
+      payload: response
+    })
+  }
+  catch(error){
+    console.log(error);
+  }
+  }
+export const editCustomer = (id:string, name:string, country: string, email: string, phone: string) => async(dispatch: any) => {
+    try{
+    const response = await client.mutate({mutation:EditCustomer,
+    variables:{
+      id,
+      name,
+      country,
+      email,
+      phone
+    }
+  })
+    dispatch({
+      type: 'editCustomer',
       payload: response
     })
   }
