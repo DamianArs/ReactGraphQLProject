@@ -67,6 +67,7 @@ export const ListComponent:React.FC = () => {
   const[page, setPage] = React.useState(1);
   const[perPage, setPerPage] = React.useState(10)
   const[openModal, setOpenModal] = React.useState(false)
+  const[currentPage, setCurrentPage] = React.useState<Customer[]>([])
   
 
   const Customers = useSelector((state:InitialStates)=>({
@@ -117,7 +118,12 @@ export const ListComponent:React.FC = () => {
       setTotal(Customers.total)
   },[Customers.customers,handleEditCustomer ])
 
- 
+  React.useEffect(()=>{
+    const lastElement = page * perPage
+    const firstElement = lastElement - perPage
+    const currentView = stateCustomers.slice(firstElement, lastElement)
+    setCurrentPage(currentView)
+  },[page, perPage, stateCustomers])
 
   
   
@@ -164,7 +170,7 @@ export const ListComponent:React.FC = () => {
               }
               {oneCustomer==='none' && <div style={{padding: '16px'}}>No Results!</div>}
               {oneCustomer.length === 0 && 
-                stateCustomers.map((customer:Customer, index:number) => (
+                currentPage.map((customer:Customer, index:number) => (
                   <TableRow key={customer.id} style={{background: index%2 ? 'white': '#f6f3f3'}}>
                     <TableCell>{customer.id}</TableCell>
                     <TableCell>
