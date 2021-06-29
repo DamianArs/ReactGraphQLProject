@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import { useHistory } from 'react-router';
 import { Customer } from '../../Types';
-import { addStoreDispatch } from '../../Store/middlewares';
+import AccountTreeIcon from '@material-ui/icons/AccountTree';
 
 
 
@@ -12,7 +12,7 @@ import { addStoreDispatch } from '../../Store/middlewares';
 const useStyles = makeStyles({
   root:{
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
     padding: '0 30px'
   },
   button:{
@@ -24,7 +24,8 @@ const useStyles = makeStyles({
     boxSizing: 'border-box',
     '&:hover':{
       border: '1px solid black'
-    }
+    },
+    marginRight: '20px'
   },
   listIcon:{
     padding: '10px',
@@ -55,16 +56,25 @@ interface InitialStates{
 export const ConsoleComponent:React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
-  const handleRoute = () => {
+  const handleRouteList = () => {
     history.push('/List')  
+  }
+  const handleRouteNodes = () => {
+    history.push('/Nodes')  
   }
 
   return(
     <div className={classes.root}>
-      <Paper className={classes.button} onClick={handleRoute}>
+      <Paper className={classes.button} onClick={handleRouteList}>
         <ListAltIcon className={classes.listIcon}/>
         <div style={{fontSize: '24px'}}>
           List of Customers
+        </div>
+      </Paper>
+      <Paper className={classes.button} onClick={handleRouteNodes}>
+        <AccountTreeIcon className={classes.listIcon}/>
+        <div style={{fontSize: '24px'}}>
+          Nodes
         </div>
       </Paper>
     </div>

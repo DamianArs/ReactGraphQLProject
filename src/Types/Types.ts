@@ -12,3 +12,8 @@ export interface Customer{
   email: string,
   phone: string
 }
+
+export interface Node{
+  name: string,
+  nodes?: string[]
+}

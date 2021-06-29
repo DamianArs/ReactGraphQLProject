@@ -5,10 +5,16 @@ type customer {
   email: String!
   phone: String!
 }
+type node {
+  name: String!
+  nodes: [String]
+}
 
 type Query {
   customers(page: Int, perPage: Int): [customer]
   _customersMeta(page: Int, perPage: Int): ListMetaData
+  nodes(page: Int, perPage: Int): [node]
+  _nodesMeta(page: Int, perPage: Int): ListMetaData
 }
 type Mutation {
   EditCustomer(

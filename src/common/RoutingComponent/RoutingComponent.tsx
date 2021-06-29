@@ -7,6 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { NewCustomerComponent } from '../../components/NewCustomerComponent'
 import { useDispatch } from 'react-redux'
 import { addStoreDispatch } from '../../Store/middlewares'
+import { NodesComponent } from '../NodesComponent'
 
 const useStyles = makeStyles({
   root:{
@@ -38,6 +39,7 @@ export const RoutingComponent = () => {
         <Route exact path='/List' component={ListComponent}/>
         <Route exact path='/List/NewCustomer' component={NewCustomerComponent}/>
         <Route exact path='/List/:uuid' component={DisplayComponent}/>
+        <Route exact path='/Nodes' component={NodesComponent}/>
       </Switch>
      </Router>
   )

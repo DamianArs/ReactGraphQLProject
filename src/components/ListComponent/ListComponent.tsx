@@ -20,13 +20,11 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
-import { DeleteCustomer } from '../../graphql/mutations';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector,useDispatch } from 'react-redux';
-import { addStoreDispatch, deleteCustomer } from '../../Store/middlewares';
-import { store } from '../../Store';
-
+import { deleteCustomer } from '../../Store/middlewares';
+import { tableRowStyles } from '../../common/tableRowStyles';
 
 
 const useStyles = makeStyles({
@@ -153,7 +151,7 @@ export const ListComponent:React.FC = () => {
             <TableBody>
               {Array.isArray(oneCustomer) && 
                 oneCustomer.map((customer:Customer, index: number) => (
-                  <TableRow key={customer.id} style={{background: index%2 ? 'white': '#f6f3f3'}}>
+                  <TableRow key={customer.id} style={{...tableRowStyles(index)}}>
                     <TableCell>{customer.id}</TableCell>
                     <TableCell>
                       <div className={classes.showDetails}>
@@ -171,7 +169,7 @@ export const ListComponent:React.FC = () => {
               {oneCustomer==='none' && <div style={{padding: '16px'}}>No Results!</div>}
               {oneCustomer.length === 0 && 
                 currentPage.map((customer:Customer, index:number) => (
-                  <TableRow key={customer.id} style={{background: index%2 ? 'white': '#f6f3f3'}}>
+                  <TableRow key={customer.id} style={{...tableRowStyles(index)}}>
                     <TableCell>{customer.id}</TableCell>
                     <TableCell>
                       <div className={classes.showDetails}>

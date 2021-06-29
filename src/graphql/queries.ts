@@ -1,6 +1,4 @@
-import { Customer } from './../Types/Types';
-
-import  gql  from "graphql-tag";
+import gql from "graphql-tag";
 
 
 export const CustomersQuery = gql`
@@ -25,4 +23,19 @@ query customers(
     count
   }
 }`
+
+export const NodesQuery = gql`
+  query nodes(
+    $page: Int
+    $perPage: Int
+  ){
+    items: nodes(
+      page: $page
+      perPage: $perPage
+    ){
+      name
+      nodes
+    }
+  }
+`
 
