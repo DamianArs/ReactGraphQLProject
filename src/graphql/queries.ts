@@ -36,6 +36,12 @@ export const NodesQuery = gql`
         name
       }
     }
+    total : _nodesMeta(
+      page: $page
+      perPage: $perPage
+    ){
+      count
+    }
   }
 `
 

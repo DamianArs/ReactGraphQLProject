@@ -26,15 +26,15 @@ module.exports = {
       })
 
     },
-    // _nodesMeta: (_, { page, perPage }) => {
-    //   const data = nodes.nodesList({
-    //     page,
-    //     perPage
-    //   });
-    //   return {
-    //     count: data.length
-    //   }
-    // },
+    _nodesMeta: (_, { page, perPage }) => {
+      const data = nodes.getNodesList({
+        page,
+        perPage
+      });
+      return {
+        count: data.length
+      }
+    },
 
   },
   Mutation: {
