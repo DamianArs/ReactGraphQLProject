@@ -10,18 +10,16 @@ query customers(
     page: $page
     perPage: $perPage
     ){
-    id
-    name
-    country
-    email
-    phone
+      list {
+        id
+        name
+        country
+        email
+        phone
+      }
+    total
   }
-  total: _customersMeta(
-    page: $page
-    perPage: $perPage
-  ) {
-    count
-  }
+  
 }`
 
 export const NodesQuery = gql`
@@ -34,7 +32,9 @@ export const NodesQuery = gql`
       perPage: $perPage
     ){
       name
-      nodes
+      nodes{
+        name
+      }
     }
   }
 `

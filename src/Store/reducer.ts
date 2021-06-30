@@ -15,8 +15,8 @@ export const reducer = (state=initialState, action:any) => {
   switch(action.type){
     case getData:
       return{
-        customers: action.payload.data.items,
-        total: action.payload.data.total.count
+        customers: action.payload.data.items.list,
+        total: action.payload.data.items.total
       }
     case  deleteCustomer: 
       return{

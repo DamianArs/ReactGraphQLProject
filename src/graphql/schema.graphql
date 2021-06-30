@@ -5,15 +5,19 @@ type customer {
   email: String!
   phone: String!
 }
-type node {
+type Node {
   name: String!
-  nodes: [String]
+  nodes: [Node]
+}
+
+type Customers {
+  list: [customer]
+  total: Int!
 }
 
 type Query {
-  customers(page: Int, perPage: Int): [customer]
-  _customersMeta(page: Int, perPage: Int): ListMetaData
-  nodes(page: Int, perPage: Int): [node]
+  customers(page: Int, perPage: Int): Customers
+  nodes(page: Int, perPage: Int): [Node]
   _nodesMeta(page: Int, perPage: Int): ListMetaData
 }
 type Mutation {

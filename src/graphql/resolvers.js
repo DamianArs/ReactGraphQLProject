@@ -9,20 +9,15 @@ module.exports = {
   Query: {
     customers: (_, { page, perPage }) => {
 
-      return customers.getCustomersList({
+      const list =  customers.getCustomersList({
         page,
         perPage
       })
-
-    },
-    _customersMeta: (_, { page, perPage }) => {
-      const data = customers.getCustomersList({
-        page,
-        perPage
-      });
       return {
-        count: data.length
+        list,
+        total: list.length
       }
+
     },
     nodes: (_, { page, perPage }) => {
       return nodes.getNodesList({
@@ -31,15 +26,15 @@ module.exports = {
       })
 
     },
-    _nodesMeta: (_, { page, perPage }) => {
-      const data = nodes.nodesList({
-        page,
-        perPage
-      });
-      return {
-        count: data.length
-      }
-    },
+    // _nodesMeta: (_, { page, perPage }) => {
+    //   const data = nodes.nodesList({
+    //     page,
+    //     perPage
+    //   });
+    //   return {
+    //     count: data.length
+    //   }
+    // },
 
   },
   Mutation: {
