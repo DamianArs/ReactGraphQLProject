@@ -18,6 +18,7 @@ type Customers {
 type Query {
   customers(page: Int, perPage: Int): Customers
   nodes(page: Int, perPage: Int): [Node]
+  oneNode(parent: String): Node
   _nodesMeta(page: Int, perPage: Int): ListMetaData
 }
 type Mutation {

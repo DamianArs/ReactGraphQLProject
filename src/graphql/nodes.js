@@ -7,9 +7,13 @@ module.exports = function () {
       {
         name: 'First',
         nodes: [
-         {'name':'FirstOne'},
-         {'name':'FirstTwo'},
-         {'name':'FirstThird'},
+         {name:'FirstOne', nodes:[
+           {name:'FirstFirstOne', nodes: [{name: 'TTT1'},{name: 'TTT2'}]},
+          {name:'FirstFirstTwo'},
+          {name:'FirstFirstThird'},
+         ]},
+         {name:'FirstTwo'},
+         {name:'FirstThird'},
         ]
       },
       {
@@ -39,3 +43,4 @@ module.exports = function () {
   }
   return nodes
 }
+

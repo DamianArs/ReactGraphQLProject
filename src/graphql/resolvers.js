@@ -26,15 +26,34 @@ module.exports = {
       })
 
     },
-    _nodesMeta: (_, { page, perPage }) => {
-      const data = nodes.getNodesList({
-        page,
-        perPage
-      });
-      return {
-        count: data.length
-      }
-    },
+    oneNode: (_, {  parent }) => {
+      
+     
+      const search = (tree, parrent) => {
+          let result = null
+                if (parrent === tree.name) {
+                    return tree
+                } else {
+                    if(tree.nodes){
+                        tree.nodes.some(node => result = search(node, parrent));
+                    }
+                    return result;
+                }
+        }
+      
+      const oneNode = search(nodes, parent)
+      console.log('ONENODE', oneNode);
+       return oneNode
+    }
+    // _nodesMeta: (_, { page, perPage }) => {
+    //   const data = nodes.getNodesList({
+    //     page,
+    //     perPage
+    //   });
+    //   return {
+    //     count: data.length
+    //   }
+    // },
 
   },
   Mutation: {

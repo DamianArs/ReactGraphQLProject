@@ -65,7 +65,7 @@ export const ConsoleComponent:React.FC = () => {
 
   return(
     <div className={classes.root}>
-      <Paper className={classes.button} onClick={handleRouteList}>
+      <Paper className={classes.button} onClick={handleRouteList} id='list'>
         <ListAltIcon className={classes.listIcon}/>
         <div style={{fontSize: '24px'}}>
           List of Customers

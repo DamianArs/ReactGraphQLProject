@@ -25,17 +25,17 @@ class CustomerController {
 
 class NodesController {
   constructor() {
-    this.nodesList = nodes.nodes
+    this.nodes = nodes.nodes
   }
   getNodesList(options) {
     let { page, perPage } = options;
 
     if (typeof page !== undefined && typeof perPage !== undefined) {
 
-      return _(this.nodesList)
+      return _(this.nodes)
         .value();
     }
-    return this.nodesList
+    return this.nodes
 
   };
 }

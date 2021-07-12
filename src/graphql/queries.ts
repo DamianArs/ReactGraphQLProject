@@ -44,4 +44,22 @@ export const NodesQuery = gql`
     }
   }
 `
+export const OneNodeQuery = gql`
+  query oneNode(
+   
+    $parent: String
+  ){
+    items: oneNode(
+      parent: $parent
+    ){
+      name
+      nodes{
+        name
+        nodes{
+          name
+        }
+      }
+    }
+  }
+`
 
