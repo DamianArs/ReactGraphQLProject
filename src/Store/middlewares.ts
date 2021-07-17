@@ -28,7 +28,7 @@ export const deleteCustomer = (id:string) => async(dispatch: any) => {
       id
     }
   })
-    console.log('MIDDLEDelete')
+  
     dispatch({
       type: 'deleteCustomer',
       payload: response

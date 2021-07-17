@@ -42,7 +42,6 @@ module.exports = {
         }
       
       const oneNode = search(nodes, parent)
-      console.log('ONENODE', oneNode);
        return oneNode
     }
     // _nodesMeta: (_, { page, perPage }) => {

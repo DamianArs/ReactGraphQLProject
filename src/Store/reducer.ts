@@ -29,8 +29,6 @@ export const reducer = (state=initialState, action:any) => {
        total: action.payload.data.addCustomer.length
     }
     case editCustomer:
-      console.log('EEEE', action.payload);
-      
       return{
         customers: action.payload.data.editCustomer,
         total: action.payload.data.editCustomer.length

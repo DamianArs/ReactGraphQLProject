@@ -10,15 +10,16 @@ import { useCallback } from 'react';
 import { values } from 'lodash';
 
 export const NodesComponent: any = () => {
-  const[state, setState] = useState([])
+  const[stateNodes, setStateNodes] = useState([])
   const [fetchNodes, fetchNodesProps] = useLazyQuery(NodesQuery)
   const [fetchOneNode, fetchOneNodeProps] = useLazyQuery(OneNodeQuery)
-  const history = useHistory()
+ const history = useHistory()
+
   const handleRoute = useCallback((value: Node) => {
       fetchOneNode({variables:{
         parent: value.name
       }})
-    
+    history.location.pathname = `/Nodes/${value.name}`
   },[fetchOneNodeProps.data])
    
   React.useEffect(() => {
@@ -31,14 +32,14 @@ export const NodesComponent: any = () => {
 
   React.useEffect(()=>{
     if(fetchOneNodeProps.data){
-      console.log('TTTTT', fetchOneNodeProps.data.items.nodes);
-      setState(fetchOneNodeProps.data.items.nodes)
-      
+      setStateNodes(fetchOneNodeProps.data.items.nodes)
     }
+    console.log(history.location.pathname.split("/").filter((x: string ) => x))
+    
   },[handleRoute])
   
 
-  if(state.length === 0){
+  if(stateNodes.length === 0){
   if(fetchNodesProps.data)
   return (
     fetchNodesProps.data.items.map((one: Node)=>(
@@ -54,7 +55,7 @@ export const NodesComponent: any = () => {
     }
   else{
   return(
-    state.map((one: Node)=>(
+    stateNodes.map((one: Node)=>(
       <div key={one.name} style={{margin: '0 32px', display: 'flex', alignItems:'center'}}>
         {one.nodes  ? <PlaylistAddCheckIcon style={{color: '#3f51b5'}}/> : <ArrowRightAltIcon  />}
         <h3 style={{marginLeft: '10px', color: one.nodes === null ? 'black' : '#3f51b5'}} 
