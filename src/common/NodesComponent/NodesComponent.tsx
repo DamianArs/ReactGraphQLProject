@@ -19,7 +19,6 @@ export const NodesComponent: any = () => {
       fetchOneNode({variables:{
         parent: value.name
       }})
-    history.location.pathname = `/Nodes/${value.name}`
   },[fetchOneNodeProps.data])
    
   React.useEffect(() => {
