@@ -1,190 +1,224 @@
-import * as React from 'react'
-import { makeStyles } from '@material-ui/core/styles';
-import { useHistory } from 'react-router';
-import { useMutation } from "@apollo/react-hooks";
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import { Customer } from '../../Types';
-import { TableSummary } from './TableSummary';
-import SlideshowOutlinedIcon from '@material-ui/icons/SlideshowOutlined';
-import { PaginationComponent } from '../../common';
-import { SearchComponent } from '../../common/SearchComponent';
-import EditIcon from '@material-ui/icons/Edit';
-import ModalDialog from '../../common/ModalDialog/ModalDialog';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { useSelector,useDispatch } from 'react-redux';
-import { deleteCustomer } from '../../Store/middlewares';
-import { tableRowStyles } from '../../common/tableRowStyles';
+import * as React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import { useHistory } from "react-router";
+import { useMutation } from "@apollo/react-hooks";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+import { Customer } from "../../Types";
+import { TableSummary } from "./TableSummary";
+import SlideshowOutlinedIcon from "@material-ui/icons/SlideshowOutlined";
+import { PaginationComponent } from "../../common";
+import { SearchComponent } from "../../common/SearchComponent";
+import EditIcon from "@material-ui/icons/Edit";
+import ModalDialog from "../../common/ModalDialog/ModalDialog";
+import LinearProgress from "@material-ui/core/LinearProgress";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
+import Tooltip from "@material-ui/core/Tooltip";
+import IconButton from "@material-ui/core/IconButton";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useSelector, useDispatch } from "react-redux";
+import { deleteCustomer } from "../../Store/middlewares";
+import { tableRowStyles } from "../../common/tableRowStyles";
+import { createSelector } from "reselect";
+import { createTestSelector } from "../../common/selector";
 
+const useStyles = makeStyles(
+  {
+    root: {
+      display: "flex",
+      flexDirection: "column",
+      padding: "30px",
+    },
 
-const useStyles = makeStyles({
-  root:{
-    display: 'flex',
-    flexDirection: 'column',
-    padding: '30px'
+    line: {
+      margin: "0 30px 40px 30px",
+      height: "1px",
+      background: "gray",
+    },
+    showDetails: {
+      display: "flex",
+      alignItems: "center",
+    },
   },
-  
-  line:{
-    margin: '0 30px 40px 30px',
-    height: '1px', 
-    background: 'gray'
-  },
-  showDetails:{
-    display: 'flex',
-    alignItems: 'center',
+  {
+    name: "ListComponent",
   }
-},
-{
-  name: 'ListComponent'
+);
+
+interface InitialStates {
+  customersReducer: {
+    customers: Customer[];
+    total: number;
+  };
 }
-)
 
-interface InitialStates{
-    customersReducer:{
-      customers: Customer[]
-      total: number
-    }
-  }
+export const ListComponent: React.FC = () => {
+  const [stateCustomers, setStateCustomers] = React.useState<Customer[]>([]);
+  const [oneCustomer, setOneCustomer] = React.useState<Customer[] | string>([]);
+  const [editCustomer, setEditCustomer] = React.useState<Customer>();
+  const [total, setTotal] = React.useState(0);
+  const [page, setPage] = React.useState(1);
+  const [perPage, setPerPage] = React.useState(10);
+  const [openModal, setOpenModal] = React.useState(false);
+  const [currentPage, setCurrentPage] = React.useState<Customer[]>([]);
 
-
-export const ListComponent:React.FC = () => {
-  const[stateCustomers, setStateCustomers] = React.useState<Customer[]>([])
-  const[oneCustomer, setOneCustomer] = React.useState<Customer[] | string>([])
-  const[editCustomer, setEditCustomer] = React.useState<Customer>()
-  const[total,setTotal] = React.useState(0)
-  const[page, setPage] = React.useState(1);
-  const[perPage, setPerPage] = React.useState(10)
-  const[openModal, setOpenModal] = React.useState(false)
-  const[currentPage, setCurrentPage] = React.useState<Customer[]>([])
-  
-
-  const Customers = useSelector((state:InitialStates)=>({
+  const Customers = useSelector((state: InitialStates) => ({
     customers: state.customersReducer.customers,
-    total: state.customersReducer.total
-  }))
- 
-  
-  const dispatch = useDispatch()
+    total: state.customersReducer.total,
+  }));
+
+  const dispatch = useDispatch();
 
   const classes = useStyles();
-  const history = useHistory()
+  const history = useHistory();
 
-  
-  const onChangePage = React.useCallback((newValue: number) => setPage(newValue), [])
-  const onChangePerPage = React.useCallback((newValue: number) => setPerPage(newValue), [])
+  const onChangePage = React.useCallback(
+    (newValue: number) => setPage(newValue),
+    []
+  );
+  const onChangePerPage = React.useCallback(
+    (newValue: number) => setPerPage(newValue),
+    []
+  );
 
-  const handleOneCustomer = React.useCallback((value: Customer[] | string)=>{
-    setOneCustomer(value)
-  },[])
+  const handleOneCustomer = React.useCallback((value: Customer[] | string) => {
+    setOneCustomer(value);
+  }, []);
 
-  const clearOneCustomer = React.useCallback(()=>{
-    setOneCustomer([])
-  },[])
+  const clearOneCustomer = React.useCallback(() => {
+    setOneCustomer([]);
+  }, []);
 
-  const handleOpenModal = React.useCallback(()=>{
-    setOpenModal(true)
-  },[])
+  const handleOpenModal = React.useCallback(() => {
+    setOpenModal(true);
+  }, []);
 
-  const handleClose = React.useCallback(()=>{
-    setOpenModal(false)
-  },[])
+  const handleClose = React.useCallback(() => {
+    setOpenModal(false);
+  }, []);
 
-  const handleEditCustomer = React.useCallback((customer: Customer)=>{
-    handleOpenModal()
-    setEditCustomer(customer)
-    setOneCustomer([])
-  },[])
+  const handleEditCustomer = React.useCallback((customer: Customer) => {
+    handleOpenModal();
+    setEditCustomer(customer);
+    setOneCustomer([]);
+  }, []);
 
-  const handleDeleteCustomer = React.useCallback((id: string)=>{
-    dispatch(deleteCustomer(id))
-    toast.success('Customer deleted')
-    },[])
- 
+  const handleDeleteCustomer = React.useCallback((id: string) => {
+    dispatch(deleteCustomer(id));
+    toast.success("Customer deleted");
+  }, []);
 
-  React.useEffect(()=>{
-      setStateCustomers(Customers.customers)
-      setTotal(Customers.total)
-  },[Customers.customers,handleEditCustomer ])
+  React.useEffect(() => {
+    setStateCustomers(Customers.customers);
+    setTotal(Customers.total);
+  }, [Customers.customers, handleEditCustomer]);
 
-  React.useEffect(()=>{
-    const lastElement = page * perPage
-    const firstElement = lastElement - perPage
-    const currentView = stateCustomers.slice(firstElement, lastElement)
-    setCurrentPage(currentView)
-  },[page, perPage, stateCustomers])
+  React.useEffect(() => {
+    const lastElement = page * perPage;
+    const firstElement = lastElement - perPage;
+    const currentView = stateCustomers.slice(firstElement, lastElement);
+    setCurrentPage(currentView);
+  }, [page, perPage, stateCustomers]);
 
-  
-  
   const handleRoute = (customer: Customer) => {
-    history.push(`/List/${customer.id}?uuid=${customer.id}&name=${customer.name}&country=${customer.country}&email=${customer.email}&phone=${customer.phone}`)
-  }
-  if(stateCustomers){
-    return(
+    history.push(
+      `/List/${customer.id}?uuid=${customer.id}&name=${customer.name}&country=${customer.country}&email=${customer.email}&phone=${customer.phone}`
+    );
+  };
+  if (stateCustomers) {
+    return (
       <div className={classes.root}>
-        <SearchComponent handleOneCustomer={(value:any)=>handleOneCustomer(value)} clearOneCustomer={clearOneCustomer} stateCustomers={stateCustomers}/>
-        <TableSummary length={total}/>
-        <div style={{height: '2px', width:'100%'}}>
-          {Customers.total === 0 && <LinearProgress style={{width: '100%', height: '2px'}}/>}
+        <SearchComponent
+          handleOneCustomer={(value: any) => handleOneCustomer(value)}
+          clearOneCustomer={clearOneCustomer}
+          stateCustomers={stateCustomers}
+        />
+        <TableSummary length={total} />
+        <div style={{ height: "2px", width: "100%" }}>
+          {Customers.total === 0 && (
+            <LinearProgress style={{ width: "100%", height: "2px" }} />
+          )}
         </div>
-        <TableContainer component={Paper} style={{borderRadius:'0 0 4px 4px'}}>
+        <TableContainer
+          component={Paper}
+          style={{ borderRadius: "0 0 4px 4px" }}
+        >
           <Table>
             <TableHead>
-              <TableRow style={{borderRadius: '0'}}>
+              <TableRow
+                style={{ borderRadius: "0" }}
+                {...createTestSelector("table-header")}
+              >
                 <TableCell>UUID</TableCell>
                 <TableCell>Name</TableCell>
                 <TableCell>Country</TableCell>
                 <TableCell>Email</TableCell>
                 <TableCell>Phone</TableCell>
-                <TableCell/>
+                <TableCell />
               </TableRow>
             </TableHead>
             <TableBody>
-              {Array.isArray(oneCustomer) && 
-                oneCustomer.map((customer:Customer, index: number) => (
-                  <TableRow key={customer.id} style={{...tableRowStyles(index)}}>
+              {Array.isArray(oneCustomer) &&
+                oneCustomer.map((customer: Customer, index: number) => (
+                  <TableRow
+                    key={customer.id}
+                    style={{ ...tableRowStyles(index) }}
+                  >
                     <TableCell>{customer.id}</TableCell>
                     <TableCell>
                       <div className={classes.showDetails}>
-                        <EditIcon onClick={()=>handleEditCustomer(customer)}/>
-                        <SlideshowOutlinedIcon style={{margin: '0 15px'}} onClick={()=>handleRoute(customer)}/> 
-                        {customer.name}
-                      </div>
-                      </TableCell>
-                    <TableCell>{customer.country}</TableCell>
-                    <TableCell>{customer.email}</TableCell>
-                    <TableCell>{customer.phone}</TableCell>
-                  </TableRow>
-                )) 
-              }
-              {oneCustomer==='none' && <div style={{padding: '16px'}}>No Results!</div>}
-              {oneCustomer.length === 0 && 
-                currentPage.map((customer:Customer, index:number) => (
-                  <TableRow key={customer.id} style={{...tableRowStyles(index)}}>
-                    <TableCell>{customer.id}</TableCell>
-                    <TableCell>
-                      <div className={classes.showDetails}>
-                        <EditIcon onClick={()=>handleEditCustomer(customer)}/>
-                        <SlideshowOutlinedIcon style={{margin: '0 15px'}} onClick={()=>handleRoute(customer)}/> 
+                        <EditIcon
+                          onClick={() => handleEditCustomer(customer)}
+                        />
+                        <SlideshowOutlinedIcon
+                          style={{ margin: "0 15px" }}
+                          onClick={() => handleRoute(customer)}
+                        />
                         {customer.name}
                       </div>
                     </TableCell>
                     <TableCell>{customer.country}</TableCell>
                     <TableCell>{customer.email}</TableCell>
                     <TableCell>{customer.phone}</TableCell>
-                    <TableCell align='right'>
-                      <Tooltip title='Delete' placement='top' >
-                        <IconButton onClick={()=>handleDeleteCustomer(customer.id)}>
-                          <MoreVertIcon/>
+                  </TableRow>
+                ))}
+              {oneCustomer === "none" && (
+                <div style={{ padding: "16px" }}>No Results!</div>
+              )}
+              {oneCustomer.length === 0 &&
+                currentPage.map((customer: Customer, index: number) => (
+                  <TableRow
+                    key={customer.id}
+                    style={{ ...tableRowStyles(index) }}
+                  >
+                    <TableCell>{customer.id}</TableCell>
+                    <TableCell>
+                      <div className={classes.showDetails}>
+                        <EditIcon
+                          onClick={() => handleEditCustomer(customer)}
+                        />
+                        <SlideshowOutlinedIcon
+                          style={{ margin: "0 15px" }}
+                          onClick={() => handleRoute(customer)}
+                        />
+                        {customer.name}
+                      </div>
+                    </TableCell>
+                    <TableCell>{customer.country}</TableCell>
+                    <TableCell>{customer.email}</TableCell>
+                    <TableCell>{customer.phone}</TableCell>
+                    <TableCell align="right">
+                      <Tooltip title="Delete" placement="top">
+                        <IconButton
+                          onClick={() => handleDeleteCustomer(customer.id)}
+                        >
+                          <MoreVertIcon />
                         </IconButton>
                       </Tooltip>
                     </TableCell>
@@ -193,8 +227,12 @@ export const ListComponent:React.FC = () => {
             </TableBody>
           </Table>
         </TableContainer>
-        <ModalDialog open={openModal} handleClose={handleClose} customer={editCustomer}/>
-        {oneCustomer.length === 0 &&
+        <ModalDialog
+          open={openModal}
+          handleClose={handleClose}
+          customer={editCustomer}
+        />
+        {oneCustomer.length === 0 && (
           <PaginationComponent
             page={page}
             perPage={perPage}
@@ -202,11 +240,9 @@ export const ListComponent:React.FC = () => {
             onChangePage={onChangePage}
             onChangePerPage={onChangePerPage}
           />
-        }
+        )}
       </div>
-    )
+    );
   }
-  return <h1>Loding...</h1>
-  
-}
-
+  return <h1>Loding...</h1>;
+};

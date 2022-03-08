@@ -9,6 +9,7 @@ import { InputAdornment } from "@material-ui/core";
 import { Customer } from "../../Types";
 import Box from "@material-ui/core/Box";
 import { useHistory } from "react-router";
+import { createTestSelector } from "../selector";
 
 const useStyles = makeStyles(
   {
@@ -82,7 +83,7 @@ export const SearchComponent: React.FC<SearchComponentProps> = ({
       }}
       onSubmit={onSubmit}
       render={({ form, handleSubmit, values }) => (
-        <div className={classes.root}>
+        <div className={classes.root} data-search-component>
           <Paper style={{ padding: "20px", marginBottom: "60px" }} id="search">
             <form onSubmit={handleSubmit} className={classes.form}>
               <Field
@@ -92,7 +93,9 @@ export const SearchComponent: React.FC<SearchComponentProps> = ({
                     label="Please add UUID"
                     variant="outlined"
                     size="small"
+                    data-input
                     className={classes.field}
+                    {...createTestSelector("input")}
                     {...input}
                     InputProps={{
                       endAdornment: (
@@ -119,14 +122,25 @@ export const SearchComponent: React.FC<SearchComponentProps> = ({
                     variant="contained"
                     color="primary"
                     type="submit"
+                    data-button-search
+                    {...createTestSelector("search-button")}
                   >
                     Search
                   </Button>
-                  <Button variant="outlined" onClick={clearOneCustomer}>
+                  <Button
+                    variant="outlined"
+                    onClick={clearOneCustomer}
+                    {...createTestSelector("clear-button")}
+                    data-button-clear
+                  >
                     Clear Search
                   </Button>
                 </Box>
-                <Button variant="outlined" onClick={handleNewCustomer}>
+                <Button
+                  variant="outlined"
+                  onClick={handleNewCustomer}
+                  {...createTestSelector("new-customer-button")}
+                >
                   New Customer
                 </Button>
               </Box>

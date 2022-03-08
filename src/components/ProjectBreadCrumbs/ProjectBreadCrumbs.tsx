@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Breadcrumbs, Link, Typography } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
@@ -46,12 +46,27 @@ const ProjectBreadCrumbs = (props: BreadCrumbsProps) => {
   const pathnames = pathname.split("/").filter((x: string) => x);
 
   const handleBack = useCallback(() => {
+    console.log("IIII", pathnamesBreadcrumb.length);
     pathnamesBreadcrumb.length = pathnamesBreadcrumb.length - 1;
-    console.log(pathnamesBreadcrumb);
+    setPathnamesBreadrumb(pathnamesBreadcrumb);
   }, [BreadCrumbs, setPathnamesBreadrumb, pathnamesBreadcrumb.length]);
+
+  const backButton = useMemo(() => {
+    console.log("AAAA", pathnamesBreadcrumb.length);
+
+    return pathnamesBreadcrumb.length > 1 ? (
+      <div
+        style={{ display: "flex", alignItems: "center" }}
+        onClick={handleBack}
+      >
+        <ArrowBackIosIcon style={{ fontSize: "14px", color: "#3f51b5" }} />
+        <Button color="primary">Back</Button>
+      </div>
+    ) : null;
+  }, [pathnamesBreadcrumb.length]);
   React.useEffect(() => {
     setPathnamesBreadrumb([...pathnames, ...BreadCrumbs]);
-  }, [BreadCrumbs, handleBack, setPathnamesBreadrumb]);
+  }, [BreadCrumbs, setPathnamesBreadrumb, pathnamesBreadcrumb.length]);
 
   return (
     <div className={classes.breadcrumbDiv} id="breadcrumbs">
@@ -82,17 +97,9 @@ const ProjectBreadCrumbs = (props: BreadCrumbsProps) => {
           );
         })} */}
       </Breadcrumbs>
-      {/* {pathnames.length > 0 && ( */}
-      <div
-        style={{ display: "flex", alignItems: "center" }}
-        onClick={handleBack}
-      >
-        <ArrowBackIosIcon style={{ fontSize: "14px", color: "#3f51b5" }} />
-        <Button color="primary">Back</Button>
-      </div>
-      {/* )} */}
+      {backButton}
     </div>
   );
 };
 
-export default withRouter(ProjectBreadCrumbs);
+export default React.memo(withRouter(ProjectBreadCrumbs));

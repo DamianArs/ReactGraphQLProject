@@ -28,7 +28,7 @@ interface ListPaginationProps {
 }
 
 export const PaginationComponent: React.FC<ListPaginationProps> = (props) => {
-  const { page, perPage, total, rowsPerPageOptions = [5,10,total] } = props;
+  const { page, perPage, total, rowsPerPageOptions = [5, 10, total] } = props;
   const classes = useStyles();
 
   const defaultPage = React.useMemo(() => page, []);
@@ -49,7 +49,7 @@ export const PaginationComponent: React.FC<ListPaginationProps> = (props) => {
   );
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} data-pagination>
       <TablePagination
         rowsPerPageOptions={rowsPerPageOptions}
         component="div"

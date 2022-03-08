@@ -63,11 +63,11 @@ export const ConsoleComponent: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      <Paper className={classes.button} onClick={handleRouteList} id="list">
+      <Paper className={classes.button} onClick={handleRouteList} data-list>
         <ListAltIcon className={classes.listIcon} />
         <div style={{ fontSize: "24px" }}>List of Customers</div>
       </Paper>
-      <Paper className={classes.button} onClick={handleRouteNodes} id="nodes">
+      <Paper className={classes.button} onClick={handleRouteNodes} data-nodes>
         <AccountTreeIcon className={classes.listIcon} />
         <div style={{ fontSize: "24px" }}>Nodes</div>
       </Paper>
